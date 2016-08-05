@@ -1,6 +1,7 @@
 package chclient
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io"
 	"net"
@@ -146,9 +147,23 @@ func (c *Client) start() {
 			connerr = nil
 			time.Sleep(d)
 		}
+		origin, _ := url.Parse("http://localhost")
+		location, _ := url.Parse(c.server)
 
-		ws, err := websocket.Dial(c.server, chshare.ProtocolVersion, "http://localhost/")
+		wsConfig := &websocket.Config{
+			Origin:    origin,
+			Location:  location,
+			Protocol:  []string{chshare.ProtocolVersion},
+			Version:   13,
+			TlsConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		fmt.Printf("ProtocolVersion: %s\n", chshare.ProtocolVersion)
+
+		// func Dial(url_, protocol, origin string) (ws *Conn, err error)
+		//ws, err := websocket.Dial(c.server, chshare.ProtocolVersion, "http://localhost/")
+		ws, err := websocket.DialConfig(wsConfig)
 		if err != nil {
+			fmt.Printf("error %s\n", err)
 			connerr = err
 			continue
 		}

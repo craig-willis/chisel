@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/jpillora/chisel/client"
+	"github.com/craig-willis/chisel/client"
 	"github.com/jpillora/chisel/server"
 )
 
